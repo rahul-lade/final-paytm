@@ -33,6 +33,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Reference repos
+_reference/
+
 # Misc
 .DS_Store
 *.pem
+pnpm-debug.log*
