@@ -5,6 +5,7 @@ import { Select } from "@repo/ui/select";
 import { useState } from "react";
 import { TextInput } from "@repo/ui/textinput";
 import { createOnRampTransaction } from "../app/lib/actions/createOnrampTransaction";
+import { toast } from "sonner";
 
 const SUPPORTED_BANKS = [{
     name: "HDFC Bank",
@@ -35,8 +36,13 @@ export const AddMoney = () => {
         }))} />
         <div className="flex justify-center pt-4">
             <Button onClick={async () => {
-                await createOnRampTransaction(provider, value)
-                window.location.href = redirectUrl || "";
+                const res = await createOnRampTransaction(provider, value);
+                if (res.success) {
+                    toast.success(res.message);
+                    window.location.href = redirectUrl || "";
+                } else {
+                    toast.error(res.message);
+                }
             }}>
             Add Money
             </Button>
