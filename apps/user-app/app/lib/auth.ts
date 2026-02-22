@@ -2,6 +2,7 @@ import db from "@repo/db/client";
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt";
 import type { NextAuthOptions } from "next-auth";
+import { LoginSchema } from "@repo/validators";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -12,19 +13,27 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Password", type: "password", required: true }
             },
             async authorize(credentials) {
-                if (!credentials?.phone || !credentials?.password) {
+                if (!credentials) return null;
+
+                const parsed = LoginSchema.safeParse({
+                    phone: credentials.phone,
+                    password: credentials.password
+                });
+
+                if (!parsed.success) {
                     return null;
                 }
 
-                const hashedPassword = await bcrypt.hash(credentials.password, 10);
+                const { phone, password } = parsed.data;
+                const hashedPassword = await bcrypt.hash(password, 10);
                 const existingUser = await db.user.findFirst({
                     where: {
-                        number: credentials.phone
+                        number: phone
                     }
                 });
 
                 if (existingUser) {
-                    const passwordValidation = await bcrypt.compare(credentials.password, existingUser.password);
+                    const passwordValidation = await bcrypt.compare(password, existingUser.password);
                     if (passwordValidation) {
                         return {
                             id: existingUser.id.toString(),
@@ -38,7 +47,7 @@ export const authOptions: NextAuthOptions = {
                 try {
                     const user = await db.user.create({
                         data: {
-                            number: credentials.phone,
+                            number: phone,
                             password: hashedPassword
                         }
                     });
@@ -56,7 +65,7 @@ export const authOptions: NextAuthOptions = {
             },
         })
     ],
-    secret: process.env.JWT_SECRET || "secret",
+    secret: process.env.JWT_SECRET,
     callbacks: {
         async session({ token, session }) {
             if (session.user) {
