@@ -1,10 +1,10 @@
 "use client";
 
-import { useBalance } from "@repo/store/balance";
-
-export default function() {
-  const balance = useBalance();
-  return <div>
-    hi there {balance}
-  </div>
+export default function Page() {
+  return (
+    <div>
+      <h1>Merchant Dashboard</h1>
+      <p>Coming soon...</p>
+    </div>
+  );
 }
