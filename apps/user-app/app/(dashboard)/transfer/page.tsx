@@ -1,33 +1,5 @@
-import prisma from "@repo/db/client";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../lib/auth";
-import { HeaderBox } from "@/components/shared/HeaderBox";
-import { AddMoneyForm } from "./_components/AddMoneyForm";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-
-const getBalance = async () => {
-  const session = await getServerSession(authOptions);
-  const balance = await prisma.balance.findFirst({
-    where: { userId: Number(session?.user?.id) },
-  });
-  return { amount: balance?.amount || 0, locked: balance?.locked || 0 };
-};
-
-const getOnRampTransactions = async () => {
-  const session = await getServerSession(authOptions);
-  const txns = await prisma.onRampTransaction.findMany({
-    where: { userId: Number(session?.user?.id) },
-    orderBy: { startTime: "desc" },
-    take: 10,
-  });
-  return txns.map((t) => ({
-    time: t.startTime,
-    amount: t.amount,
-    status: t.status,
-    provider: t.provider,
-  }));
-};
+import { getBalance } from "../../lib/data/balance";
+import { getOnRampTransactions } from "../../lib/data/transactions";
 
 const STATUS_STYLES: Record<string, string> = {
   Success: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
@@ -35,9 +7,21 @@ const STATUS_STYLES: Record<string, string> = {
   Failure: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 };
 
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../lib/auth";
+import { HeaderBox } from "@/components/shared/HeaderBox";
+import { AddMoneyForm } from "./_components/AddMoneyForm";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
 const Page = async () => {
-  const balance = await getBalance();
-  const transactions = await getOnRampTransactions();
+  const session = await getServerSession(authOptions);
+  const userId = Number(session?.user?.id);
+
+  const [balance, transactions] = await Promise.all([
+    getBalance(userId),
+    getOnRampTransactions(userId)
+  ]);
 
   return (
     <div className="flex flex-col gap-8">
