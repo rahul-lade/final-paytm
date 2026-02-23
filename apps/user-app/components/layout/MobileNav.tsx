@@ -11,66 +11,63 @@ import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UserFooter } from "./UserFooter";
 
-interface MobileNavProps {
+interface IMobileNavProps {
   user: {
     name?: string | null;
     email?: string | null;
   } | undefined;
 }
 
-export function MobileNav({ user }: MobileNavProps) {
+const MobileNav = ({ user }: IMobileNavProps) => {
   const pathname = usePathname();
 
   return (
-    <section className="w-full max-w-[264px] lg:hidden">
+    <div className="md:hidden">
       <Sheet>
         <SheetTrigger asChild>
-          <button className="flex items-center justify-center p-2 rounded-md hover:bg-accent text-foreground">
-            <Menu className="size-6" />
+          <button className="flex items-center justify-center size-8 rounded-md hover:bg-accent text-foreground">
+            <Menu className="size-5" />
           </button>
         </SheetTrigger>
-        <SheetContent side="left" className="border-none bg-card p-0">
-          <Link href="/" className="cursor-pointer flex items-center gap-2 px-6 pt-8 pb-4">
-            <div className="size-[34px] rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
+        <SheetContent side="left" className="border-none bg-card p-0 w-64">
+          <Link href="/dashboard" className="flex items-center gap-1.5 px-5 pt-6 pb-3">
+            <div className="size-7 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
               P
             </div>
-            <h1 className="text-26 font-ibm-plex-serif font-bold text-foreground">Paytm</h1>
+            <span className="text-base font-bold font-ibm-plex-serif text-foreground">Paytm</span>
           </Link>
 
-          <div className="flex h-[calc(100vh-100px)] flex-col justify-between overflow-y-auto px-4 pb-4">
-            <nav className="flex h-full flex-col gap-2 pt-4">
-              {sidebarLinks.map((item) => {
-                const isActive = pathname === item.route || pathname.startsWith(`${item.route}/`);
-                const IconStyle = item.imgURL;
+          <nav className="flex flex-col gap-1 px-3 pt-3">
+            {sidebarLinks.map((item) => {
+              const isActive = pathname === item.route || pathname.startsWith(`${item.route}/`);
+              const Icon = item.icon;
 
-                return (
-                  <SheetClose asChild key={item.route}>
-                    <Link
-                      href={item.route}
-                      className={cn(
-                        "flex gap-3 items-center p-4 rounded-lg w-full transition-all",
-                        {
-                          "bg-primary text-primary-foreground": isActive,
-                          "hover:bg-accent": !isActive,
-                        }
-                      )}
-                    >
-                      <IconStyle className={cn("size-5", { "text-primary-foreground": isActive })} />
-                      <p className={cn("text-16 font-semibold", { "text-primary-foreground": isActive })}>
-                        {item.label}
-                      </p>
-                    </Link>
-                  </SheetClose>
-                );
-              })}
-            </nav>
-
-            <UserFooter user={user} type="mobile" />
-          </div>
+              return (
+                <SheetClose asChild key={item.route}>
+                  <Link
+                    href={item.route}
+                    className={cn(
+                      "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all relative",
+                      isActive
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                    )}
+                  >
+                    {isActive && (
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r-full bg-primary" />
+                    )}
+                    <Icon className="size-4" />
+                    <span>{item.label}</span>
+                  </Link>
+                </SheetClose>
+              );
+            })}
+          </nav>
         </SheetContent>
       </Sheet>
-    </section>
+    </div>
   );
-}
+};
+
+export { MobileNav };
