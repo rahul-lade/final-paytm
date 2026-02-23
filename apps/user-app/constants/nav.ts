@@ -4,26 +4,41 @@ import {
     Clock,
     Send
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-export const sidebarLinks = [
+interface ISidebarLink {
+    icon: LucideIcon;
+    route: string;
+    label: string;
+    pageTitle: string;
+}
+
+const sidebarLinks: ISidebarLink[] = [
     {
-        imgURL: Home,
+        icon: Home,
         route: "/dashboard",
         label: "Home",
+        pageTitle: "Dashboard",
     },
     {
-        imgURL: ArrowRightLeft,
+        icon: ArrowRightLeft,
         route: "/transfer",
         label: "Transfer",
+        pageTitle: "Transfer Money",
     },
     {
-        imgURL: Clock,
+        icon: Clock,
         route: "/transactions",
         label: "Transactions",
+        pageTitle: "Transaction History",
     },
     {
-        imgURL: Send,
+        icon: Send,
         route: "/p2p",
         label: "P2P Transfer",
-    }
+        pageTitle: "Send Money",
+    },
 ];
+
+export { sidebarLinks };
+export type { ISidebarLink };

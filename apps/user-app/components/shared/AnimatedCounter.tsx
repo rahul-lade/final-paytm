@@ -31,7 +31,7 @@ const AnimatedCounter = ({ amount }: AnimatedCounterProps) => {
   }, [amount]);
 
   return (
-    <span className="text-2xl lg:text-3xl flex-1 font-semibold text-foreground tabular-nums">
+    <span className="text-lg font-semibold text-foreground tabular-nums">
       ₹{(displayAmount / 100).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
     </span>
   );

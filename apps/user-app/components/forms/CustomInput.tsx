@@ -32,7 +32,7 @@ const CustomInput = <T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem className="flex flex-col gap-1.5">
-          <FormLabel className="text-sm w-full max-w-[280px] font-medium text-foreground">
+          <FormLabel className="text-xs font-medium text-foreground">
             {label}
           </FormLabel>
           <div className="flex w-full flex-col">
