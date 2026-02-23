@@ -1,18 +1,30 @@
 import express from "express";
 import db from "@repo/db/client";
+import crypto from "crypto";
 import { BankWebhookSchema } from "@repo/validators";
 
 const app = express();
 
 app.use(express.json())
 
-// Simulated secret that would normally be set by the bank in our dashboard
-const SIMULATED_BANK_SECRET = process.env.BANK_WEBHOOK_SECRET || "simulate-bank-secret";
+const SIMULATED_BANK_SECRET = process.env.BANK_WEBHOOK_SECRET;
 
 app.post("/hdfcWebhook", async (req, res) => {
     // 1. Verify Authentication/Signature
     const signature = req.headers["x-webhook-signature"];
-    if (signature !== SIMULATED_BANK_SECRET) {
+
+    if (!SIMULATED_BANK_SECRET || !signature || typeof signature !== "string") {
+        return res.status(401).json({ message: "Invalid signature" });
+    }
+
+    try {
+        const expectedBuffer = Buffer.from(SIMULATED_BANK_SECRET);
+        const signatureBuffer = Buffer.from(signature);
+
+        if (expectedBuffer.length !== signatureBuffer.length || !crypto.timingSafeEqual(expectedBuffer, signatureBuffer)) {
+            return res.status(401).json({ message: "Invalid signature" });
+        }
+    } catch {
         return res.status(401).json({ message: "Invalid signature" });
     }
 
