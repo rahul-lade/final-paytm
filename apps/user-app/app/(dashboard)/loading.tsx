@@ -2,15 +2,32 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const Loading = () => {
   return (
-    <div className="flex flex-col gap-8 w-full">
-      <div className="flex flex-col gap-2">
-        <Skeleton className="h-8 w-48" />
+    <div className="flex flex-col gap-5">
+      {/* Header skeleton */}
+      <div className="flex flex-col gap-1">
+        <Skeleton className="h-7 w-64" />
         <Skeleton className="h-4 w-96" />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <Skeleton className="h-64 w-full" />
-        <Skeleton className="h-64 w-full" />
+
+      {/* KPI cards skeleton */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <Skeleton className="h-20 rounded-lg" />
+        <Skeleton className="h-20 rounded-lg" />
+        <Skeleton className="h-20 rounded-lg" />
       </div>
+
+      {/* Quick actions skeleton */}
+      <div className="flex flex-col gap-3">
+        <Skeleton className="h-5 w-28" />
+        <div className="grid grid-cols-3 gap-3">
+          <Skeleton className="h-24 rounded-lg" />
+          <Skeleton className="h-24 rounded-lg" />
+          <Skeleton className="h-24 rounded-lg" />
+        </div>
+      </div>
+
+      {/* Recent transactions skeleton */}
+      <Skeleton className="h-64 rounded-lg" />
     </div>
   );
 };

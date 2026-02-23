@@ -1,45 +1,46 @@
 "use client";
 
-import { BalanceChart } from "./BalanceChart";
 import { AnimatedCounter } from "@/components/shared/AnimatedCounter";
 import { Card, CardContent } from "@/components/ui/card";
+import { Wallet, Lock, TrendingUp } from "lucide-react";
 
-interface TotalBalanceBoxProps {
+interface ITotalBalanceBoxProps {
   amount: number;
   locked: number;
 }
 
-const TotalBalanceBox = ({ amount, locked }: TotalBalanceBoxProps) => {
-  return (
-    <Card className="w-full border border-border">
-      <CardContent className="flex items-center gap-5 p-5 sm:p-6">
-        <BalanceChart available={amount} locked={locked} />
+const BALANCE_CARDS = [
+  { key: "available", label: "Available", icon: Wallet, color: "text-primary" },
+  { key: "locked", label: "Locked", icon: Lock, color: "text-muted-foreground" },
+  { key: "total", label: "Total Balance", icon: TrendingUp, color: "text-foreground" },
+] as const;
 
-        <div className="flex flex-col gap-5">
-          <h2 className="text-lg font-semibold text-foreground">
-            Wallet Balance
-          </h2>
-          <div className="flex flex-col gap-1">
-            <p className="text-sm font-medium text-muted-foreground">
-              Total Current Balance
-            </p>
-            <div className="flex items-center gap-2">
-              <AnimatedCounter amount={amount + locked} />
-            </div>
-          </div>
-          <div className="flex gap-5 text-sm">
-            <div className="flex items-center gap-1">
-              <div className="size-2 rounded-full bg-primary" />
-              <span className="text-muted-foreground">Available: ₹{(amount / 100).toLocaleString()}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="size-2 rounded-full bg-muted-foreground" />
-              <span className="text-muted-foreground">Locked: ₹{(locked / 100).toLocaleString()}</span>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+const TotalBalanceBox = ({ amount, locked }: ITotalBalanceBoxProps) => {
+  const values: Record<string, number> = {
+    available: amount,
+    locked: locked,
+    total: amount + locked,
+  };
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      {BALANCE_CARDS.map((card) => {
+        const Icon = card.icon;
+        return (
+          <Card key={card.key} className="border border-border">
+            <CardContent className="flex items-center gap-3 p-4">
+              <div className="size-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                <Icon className={`size-5 ${card.color}`} />
+              </div>
+              <div className="flex flex-col gap-0.5 min-w-0">
+                <span className="text-xs text-muted-foreground font-medium">{card.label}</span>
+                <AnimatedCounter amount={values[card.key] ?? 0} />
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
   );
 };
 
