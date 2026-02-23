@@ -2,10 +2,10 @@ import { withAuth } from "next-auth/middleware";
 
 export default withAuth({
     pages: {
-        signIn: "/api/auth/signin",
+        signIn: "/signin",
     },
 });
 
 export const config = {
-    matcher: ["/dashboard/:path*", "/transfer/:path*", "/transactions/:path*"],
+    matcher: ["/dashboard/:path*", "/transfer/:path*", "/transactions/:path*", "/p2p/:path*"],
 };
