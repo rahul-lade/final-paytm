@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { createOnRampTransaction } from "@/app/lib/actions/createOnrampTransaction";
 import { toast } from "sonner";
 
@@ -55,12 +55,10 @@ const AddMoneyForm = () => {
 
   return (
     <Card className="border border-border">
-      <CardHeader>
-        <CardTitle className="text-lg">Add Money to Wallet</CardTitle>
-      </CardHeader>
-      <CardContent>
+      <CardContent className="p-4">
+        <h3 className="text-sm font-semibold text-foreground mb-3">Add Money to Wallet</h3>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3">
             <FormField
               control={form.control}
               name="amount"

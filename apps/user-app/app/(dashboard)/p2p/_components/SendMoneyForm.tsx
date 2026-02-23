@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { p2pTransfer } from "@/app/lib/actions/p2pTransfer";
 import { toast } from "sonner";
 
@@ -47,13 +47,11 @@ const SendMoneyForm = () => {
   };
 
   return (
-    <Card className="border border-border w-full max-w-lg">
-      <CardHeader>
-        <CardTitle className="text-lg">Send Money</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <Card className="border border-border w-full">
+      <CardContent className="p-4">
+        <h3 className="text-sm font-semibold text-foreground mb-3">Send Money</h3>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3">
             <FormField
               control={form.control}
               name="phone"

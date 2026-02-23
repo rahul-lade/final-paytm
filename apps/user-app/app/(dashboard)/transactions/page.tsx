@@ -1,7 +1,8 @@
 import { getPaginatedTransactions } from "../../lib/data/transactions";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
-import { HeaderBox } from "@/components/shared/HeaderBox";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+import { EmptyState } from "@/components/shared/EmptyState";
 import {
   Table,
   TableBody,
@@ -10,17 +11,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-
-const STATUS_STYLES: Record<string, string> = {
-  Success: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  Processing: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  Failure: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-};
+import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 
 const Page = async ({ searchParams }: { searchParams: Promise<{ page?: string }> }) => {
   const params = await searchParams;
@@ -34,67 +28,71 @@ const Page = async ({ searchParams }: { searchParams: Promise<{ page?: string }>
   const { data: transactions, hasMore } = await getPaginatedTransactions(userId, skip, limit);
 
   return (
-    <div className="flex flex-col gap-8">
-      <HeaderBox title="Transaction History" subtext="View all your past transactions" />
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-xl font-semibold text-foreground">Transaction History</h1>
+        <p className="text-sm text-muted-foreground">View all your past transactions</p>
+      </div>
 
       <Card className="border border-border">
-        <CardHeader>
-          <CardTitle className="text-lg">All Transactions</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           {!transactions.length ? (
-            <p className="text-center py-10 text-muted-foreground">No transactions found</p>
+            <EmptyState
+              icon={Clock}
+              title="No transactions found"
+              description="Start by adding money to your wallet or making a P2P transfer."
+              actionLabel="Add Money"
+              actionHref="/transfer"
+            />
           ) : (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted/50">
-                    <TableHead className="px-2">Transaction</TableHead>
-                    <TableHead className="px-2">Amount</TableHead>
-                    <TableHead className="px-2">Status</TableHead>
-                    <TableHead className="px-2">Date</TableHead>
-                    <TableHead className="px-2 hidden md:table-cell">Channel</TableHead>
+                  <TableRow className="bg-muted/40 hover:bg-muted/40">
+                    <TableHead className="text-xs font-medium">Transaction</TableHead>
+                    <TableHead className="text-xs font-medium">Amount</TableHead>
+                    <TableHead className="text-xs font-medium">Status</TableHead>
+                    <TableHead className="text-xs font-medium">Date</TableHead>
+                    <TableHead className="text-xs font-medium hidden md:table-cell">Channel</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {transactions.map((t) => (
-                    <TableRow key={t.id} className={t.type === "debit" ? "bg-red-50/50 dark:bg-red-950/10" : "bg-green-50/50 dark:bg-green-950/10"}>
-                      <TableCell className="max-w-[250px] pl-2 pr-10">
-                        <span className="text-sm truncate font-semibold text-foreground">
+                    <TableRow key={t.id}>
+                      <TableCell>
+                        <span className="text-sm font-medium text-foreground truncate">
                           {t.description}
                         </span>
                       </TableCell>
-                      <TableCell className={`pl-2 pr-10 font-semibold tabular-nums ${t.type === "debit" ? "text-red-500 dark:text-red-400" : "text-green-600 dark:text-green-400"}`}>
+                      <TableCell className={`font-semibold tabular-nums text-sm ${t.type === "debit" ? "text-red-500 dark:text-red-400" : "text-green-600 dark:text-green-400"}`}>
                         {t.type === "debit" ? "-" : "+"}₹{(t.amount / 100).toLocaleString()}
                       </TableCell>
-                      <TableCell className="pl-2 pr-10">
-                        <Badge variant="outline" className={STATUS_STYLES[t.status] || ""}>
-                          {t.status}
-                        </Badge>
+                      <TableCell>
+                        <StatusBadge status={t.status} />
                       </TableCell>
-                      <TableCell className="min-w-32 pl-2 pr-10 text-sm text-muted-foreground">
+                      <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
                         {t.date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                       </TableCell>
-                      <TableCell className="pl-2 pr-10 capitalize hidden md:table-cell text-sm text-muted-foreground">
+                      <TableCell className="capitalize hidden md:table-cell text-sm text-muted-foreground">
                         {t.channel}
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-              
+
               {(page > 1 || hasMore) && transactions.length > 0 && (
-                <div className="flex items-center justify-between pt-4 pb-2">
-                  <span className="text-sm text-muted-foreground">Page {page}</span>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" asChild disabled={page <= 1}>
+                <div className="flex items-center justify-between px-4 py-3 border-t border-border">
+                  <span className="text-xs text-muted-foreground">Page {page}</span>
+                  <div className="flex gap-1">
+                    <Button variant="outline" size="sm" asChild disabled={page <= 1} className="h-7 text-xs">
                       <Link href={page > 1 ? `/transactions?page=${page - 1}` : "#"} className={page <= 1 ? "pointer-events-none opacity-50" : ""}>
-                        <ChevronLeft className="size-4 mr-1" /> Previous
+                        <ChevronLeft className="size-3.5 mr-0.5" /> Previous
                       </Link>
                     </Button>
-                    <Button variant="outline" size="sm" asChild disabled={!hasMore}>
+                    <Button variant="outline" size="sm" asChild disabled={!hasMore} className="h-7 text-xs">
                       <Link href={hasMore ? `/transactions?page=${page + 1}` : "#"} className={!hasMore ? "pointer-events-none opacity-50" : ""}>
-                        Next <ChevronRight className="size-4 ml-1" />
+                        Next <ChevronRight className="size-3.5 ml-0.5" />
                       </Link>
                     </Button>
                   </div>
