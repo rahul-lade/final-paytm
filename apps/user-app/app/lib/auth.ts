@@ -25,7 +25,6 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 const { phone, password } = parsed.data;
-                const hashedPassword = await bcrypt.hash(password, 10);
                 const existingUser = await db.user.findFirst({
                     where: {
                         number: phone
@@ -42,23 +41,6 @@ export const authOptions: NextAuthOptions = {
                         }
                     }
                     return null;
-                }
-
-                try {
-                    const user = await db.user.create({
-                        data: {
-                            number: phone,
-                            password: hashedPassword
-                        }
-                    });
-
-                    return {
-                        id: user.id.toString(),
-                        name: user.name,
-                        email: user.number
-                    }
-                } catch (e) {
-                    console.error(e);
                 }
 
                 return null;

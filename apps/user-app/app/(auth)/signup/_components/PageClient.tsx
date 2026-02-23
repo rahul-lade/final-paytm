@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { CustomInput } from "@/components/forms/CustomInput";
 import { toast } from "sonner";
+import { signup } from "../../../lib/actions/signup";
 
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -42,7 +43,14 @@ const PageClient = () => {
   const onSubmit = async (data: SignUpValues) => {
     setIsLoading(true);
     try {
-      // Sign in with credentials — NextAuth authorize will auto-create the user
+      const signupRes = await signup(data.phone, data.password, data.name);
+      if (!signupRes.success) {
+        toast.error(signupRes.message);
+        setIsLoading(false);
+        return;
+      }
+
+      // Automatically sign in after creating account
       const response = await signIn("credentials", {
         phone: data.phone,
         password: data.password,
@@ -53,7 +61,7 @@ const PageClient = () => {
         toast.success("Account created successfully!");
         router.push("/dashboard");
       } else {
-        toast.error("Failed to create account. Please try again.");
+        toast.error("Account created, but failed to log in automatically.");
       }
     } catch {
       toast.error("Something went wrong. Please try again.");
