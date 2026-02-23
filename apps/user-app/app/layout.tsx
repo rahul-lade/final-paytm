@@ -1,15 +1,21 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, IBM_Plex_Serif } from "next/font/google";
 import { Providers } from "../components/providers/Providers";
+import { ThemeProvider } from "../components/providers/ThemeProvider";
 import { AppbarClient } from "../components/AppbarClient";
 import { Toaster } from "sonner";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
+const ibmPlexSerif = IBM_Plex_Serif({
+  subsets: ["latin"],
+  weight: ['400', '700'],
+  variable: '--font-ibm-plex-serif'
+});
 
 export const metadata: Metadata = {
-  title: "Wallet",
-  description: "Simple wallet app",
+  title: "Paytm Clone",
+  description: "Modern banking experience",
 };
 
 export default function RootLayout({
@@ -18,16 +24,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <Providers>
-        <body className={inter.className}>
-          <div className="min-w-screen min-h-screen bg-[#ebe6e6]">
-            <AppbarClient />
-            {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} ${ibmPlexSerif.variable} font-inter antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>
+            <div className="min-w-screen min-h-screen bg-background">
+              {children}
+            </div>
             <Toaster richColors position="top-center" />
-          </div>
-        </body>
-      </Providers>
+          </Providers>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
