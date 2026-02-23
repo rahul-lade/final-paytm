@@ -55,29 +55,18 @@ const PageClient = () => {
   };
 
   return (
-    <section className="flex min-h-screen w-full max-w-[420px] flex-col justify-center gap-5 py-10 md:gap-8">
-      <header className="flex flex-col gap-5 md:gap-8">
-        <Link href="/" className="cursor-pointer flex items-center gap-2">
-          <div className="size-[34px] rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
-            P
-          </div>
-          <h1 className="text-[26px] font-ibm-plex-serif font-bold text-foreground">
-            Paytm
-          </h1>
-        </Link>
-
-        <div className="flex flex-col gap-1 md:gap-3">
-          <h1 className="text-2xl lg:text-4xl font-semibold text-foreground">
-            Sign In
-          </h1>
-          <p className="text-base font-normal text-muted-foreground">
-            Please enter your details
-          </p>
-        </div>
+    <section className="flex w-full max-w-sm flex-col justify-center gap-5 py-10">
+      <header className="flex flex-col gap-1">
+        <h1 className="text-2xl font-semibold text-foreground">
+          Sign In
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Enter your credentials to access your account
+        </p>
       </header>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3">
           <CustomInput
             control={form.control}
             name="phone"
@@ -92,30 +81,28 @@ const PageClient = () => {
             type="password"
           />
 
-          <div className="flex flex-col gap-4">
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full rounded-lg bg-primary font-semibold text-primary-foreground"
-            >
-              {isLoading ? (
-                <React.Fragment>
-                  <Loader2 size={20} className="animate-spin" />
-                  &nbsp;Loading...
-                </React.Fragment>
-              ) : (
-                "Sign In"
-              )}
-            </Button>
-          </div>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full mt-1"
+          >
+            {isLoading ? (
+              <React.Fragment>
+                <Loader2 size={16} className="animate-spin" />
+                &nbsp;Signing in...
+              </React.Fragment>
+            ) : (
+              "Sign In"
+            )}
+          </Button>
         </form>
       </Form>
 
       <footer className="flex justify-center gap-1">
-        <p className="text-sm font-normal text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Don&apos;t have an account?
         </p>
-        <Link href="/signup" className="text-sm cursor-pointer font-medium text-primary">
+        <Link href="/signup" className="text-sm font-medium text-primary">
           Sign up
         </Link>
       </footer>
