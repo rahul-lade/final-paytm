@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Inter, IBM_Plex_Serif } from "next/font/google";
 import { Providers } from "../components/providers/Providers";
 import { ThemeProvider } from "../components/providers/ThemeProvider";
-import { AppbarClient } from "../components/AppbarClient";
 import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
@@ -18,11 +17,11 @@ export const metadata: Metadata = {
   description: "Modern banking experience",
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: {
   children: React.ReactNode;
-}) {
+}) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${ibmPlexSerif.variable} font-inter antialiased`}>
@@ -42,4 +41,6 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

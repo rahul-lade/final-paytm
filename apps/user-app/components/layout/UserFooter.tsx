@@ -19,10 +19,10 @@ export function UserFooter({ user, type = "desktop" }: UserFooterProps) {
 
   const handleLogout = async () => {
     await signOut();
-    router.push("/api/auth/signin");
+    router.push("/signin");
   };
 
-  const initial = user?.name ? user.name[0].toUpperCase() : "U";
+  const initial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
 
   return (
     <footer className="flex cursor-pointer items-center justify-between gap-2 py-6">
